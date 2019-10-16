@@ -48,6 +48,10 @@ class ${NAME}(private val clickListener: ${LISTENER_NAME}? = null) :
                 // TODO: Bind data with view
            
             }
+            is ${VIEW_HOLDER_NAME} -> {
+                val item = getItem(position) as DataItem.Header
+                // TODO: Bind data with view
+            }
         }
     }
 
@@ -60,7 +64,7 @@ class ${NAME}(private val clickListener: ${LISTENER_NAME}? = null) :
 
 
     class ${VIEW_HOLDER_NAME} private constructor(
-        val binding: ${VIEW_HOLDER_ITEM_BINDING_NAME}
+        binding: ${VIEW_HOLDER_ITEM_BINDING_NAME}
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(clickListener: ${LISTENER_NAME}, item: ${MODEL_NAME}) {
@@ -78,7 +82,7 @@ class ${NAME}(private val clickListener: ${LISTENER_NAME}? = null) :
     }
 
     class ${VIEW_HOLDER_HEADER_NAME} private constructor(
-        val binding: ItemRecipeHomeBinding
+        val binding: ${VIEW_HOLDER_HEADER_ITEM_BINDING_NAME}
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ${MODEL_NAME}) = with(itemView) {
