@@ -60,7 +60,7 @@ class ${NAME}(private val clickListener: ${LISTENER_NAME}? = null) :
 
 
     class ${VIEW_HOLDER_NAME} private constructor(
-        binding: ${VIEW_HOLDER_ITEM_BINDING_NAME}
+        val binding: ${VIEW_HOLDER_ITEM_BINDING_NAME}
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(clickListener: ${LISTENER_NAME}, item: ${MODEL_NAME}) {
