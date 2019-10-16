@@ -1,0 +1,136 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME}#end
+
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.View.OnClickListener
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private val ITEM_VIEW_TYPE_HEADER = 0
+private val ITEM_VIEW_TYPE_ITEM = 1
+
+class ${NAME}(private val clickListener: ${LISTENER_NAME}? = null) :
+    ListAdapter<${NAME}.DataItem, RecyclerView.ViewHolder>(${MODEL_NAME}DC()) {
+
+
+    private val adapterScope = CoroutineScope(Dispatchers.Default)
+
+    fun addHeaderAndSubmitList(list: List<${MODEL_NAME}>?) {
+        adapterScope.launch {
+            val items = when (list) {
+                null -> listOf(DataItem.Header)
+                else -> listOf(DataItem.Header) + list.map { DataItem.${MODEL_NAME}Item(it) }
+            }
+            withContext(Dispatchers.Main) {
+                submitList(items)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : RecyclerView.ViewHolder {
+        return when (viewType) {
+            ITEM_VIEW_TYPE_HEADER -> ${VIEW_HOLDER_HEADER_NAME}.from(parent)
+            ITEM_VIEW_TYPE_ITEM -> ${VIEW_HOLDER_NAME}.from(parent)
+            else -> throw ClassCastException("Unknown viewType")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder){
+            is ${VIEW_HOLDER_NAME} -> {
+                val item = getItem(position) as DataItem.${MODEL_NAME}Item
+                // TODO: Bind data with view
+           
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
+            is DataItem.${MODEL_NAME}Item -> ITEM_VIEW_TYPE_ITEM
+        }
+    }
+
+
+    class ${VIEW_HOLDER_NAME} private constructor(
+        binding: ${VIEW_HOLDER_ITEM_BINDING_NAME}
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(clickListener: ${LISTENER_NAME}, item: ${MODEL_NAME}) {
+           //TODO: bind data
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ${VIEW_HOLDER_NAME} {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ${VIEW_HOLDER_ITEM_BINDING_NAME}.inflate(layoutInflater, parent, false)
+
+                return ${VIEW_HOLDER_NAME}(binding)
+            }
+        }
+    }
+
+    class ${VIEW_HOLDER_HEADER_NAME} private constructor(
+        val binding: ItemRecipeHomeBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: ${MODEL_NAME}) = with(itemView) {
+            // TODO: Bind the data with View
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ${VIEW_HOLDER_HEADER_NAME} {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ${VIEW_HOLDER_HEADER_ITEM_BINDING_NAME}.inflate(layoutInflater, parent, false)
+
+                return ${VIEW_HOLDER_HEADER_NAME}(binding)
+            }
+        }
+    }
+
+
+
+    class ${LISTENER_NAME}(val clickListener: (id : String) -> Unit) {
+        fun onClick(item: ${MODEL_NAME}) = clickListener(item.title)
+    }
+
+
+    private class ${MODEL_NAME}DC : DiffUtil.ItemCallback<DataItem>() {
+        override fun areItemsTheSame(
+            oldItem: DataItem,
+            newItem: DataItem
+        ): Boolean {
+            //TODO : put your logic here  
+            return false
+        }
+
+        override fun areContentsTheSame(
+            oldItem: DataItem,
+            newItem: DataItem
+        ): Boolean {
+            //TODO : put your logic here  
+            return false
+        }
+    }
+
+    sealed class DataItem {
+        data class ${MODEL_NAME}Item(val  item : ${MODEL_NAME}) : DataItem() {
+            // TODO : override id ..
+            override val id = ""
+        }
+
+        object Header: DataItem() {
+            // TODO : override id ..
+            override val id = ""
+        }
+
+        abstract val id: String
+    }
+}
